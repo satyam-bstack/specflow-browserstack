@@ -1,5 +1,5 @@
 @sample-test
-Feature: Sample
+Feature: BStack Sample
 	Scenario Outline: Can add product to cart
 		Given I navigate to website
 		Then I should see title StackDemo
