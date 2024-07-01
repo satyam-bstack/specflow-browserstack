@@ -8,5 +8,5 @@ obj
 *.xml
 *.features.cs
 .DS_Store
-.vs
 *.log
+.vs
