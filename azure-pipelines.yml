@@ -37,7 +37,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/*.Tests.csproj'  # Make sure to specify your test project(s) here
+    projects: '**/*.csproj'  # Test Project
     arguments: '--configuration $(buildConfiguration) --logger "trx;LogFileName=test-results.trx"'  # Output test results in TRX format
     publishTestResults: true   # Publish test results to Azure DevOps
     testRunTitle: 'SpecFlow Test Run on BrowserStack'
