@@ -4,17 +4,17 @@
 # Add your BrowserStack userName and acccessKey here or set BROWSERSTACK_USERNAME and
 # BROWSERSTACK_ACCESS_KEY as env variables
 
-userName: satyamsharma_gJw8Rc
-accessKey: TrfD5UKw5hSrULSzv43U
+userName: BROWSERSTACK_USERNAME
+accessKey: BROWSERSTACK_ACCESS_KEY
 
 # ======================
 # BrowserStack Reporting
 # ======================
 # The following capabilities are used to set up reporting on BrowserStack:
 # Set 'projectName' to the name of your project. Example, Marketing Website
-projectName: Specflow_SS_Demo
+projectName: Azure_Pipeline_Demo
 # Set `buildName` as the name of the job / testsuite being run
-buildName: Specflow_SDK_
+buildName: Azure_Pipeline_Demo_
 # `buildIdentifier` is a unique id to differentiate every execution that gets appended to
 # buildName. Choose your buildIdentifier format from the available expressions:
 # ${BUILD_NUMBER} (Default): Generates an incremental counter with every execution
@@ -49,7 +49,7 @@ platforms:
 # ==========================================
 # Set browserStackLocal to true if your website under test is not accessible publicly over the internet
 # Learn more about how BrowserStack Local works here -> https://www.browserstack.com/docs/automate/selenium/local-testing-introduction
-browserstackLocal: true # <boolean> (Default false)
+browserstackLocal: false # <boolean> (Default false)
 
 # browserStackLocalOptions:
 # Options to be passed to BrowserStack local in-case of advanced configurations
