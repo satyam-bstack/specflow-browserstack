@@ -16,6 +16,14 @@ variables:
   BROWSERSTACK_TEST_RUN_NAME: $(Build.BuildId)
 
 steps:
+
+# Install .NET 8.0 SDK
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '8.0.x'   # This will install the latest version of .NET 8.0 SDK
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -32,6 +40,14 @@ steps:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: Bash@3
+  displayName: 'Set BrowserStack Environment Variables'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "##vso[task.setvariable variable=BROWSERSTACK_USERNAME]$(BROWSERSTACK_USERNAME)"
+      echo "##vso[task.setvariable variable=BROWSERSTACK_ACCESS_KEY]$(BROWSERSTACK_ACCESS_KEY)"
 
 # Step to run the tests using dotnet test
 - task: DotNetCoreCLI@2
@@ -51,4 +67,3 @@ steps:
 - task: BrowserStackResults@1
   inputs:
     browserstackProduct: 'automate'
-# Step to build the solution (this includes the test projects)
