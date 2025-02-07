@@ -13,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  BROWSERSTACK_TEST_RUN_NAME: $(Build.BuildId)
 
 steps:
 - task: NuGetToolInstaller@1
@@ -21,6 +22,13 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
     
+- task: BrowserStackConfig@0
+  inputs:
+    BrowserStackServiceEndPoint: 'browserstack-connection'
+    
+- task: BrowserStackResults@1
+  inputs:
+    browserstackProduct: 'automate'
 # Step to build the solution (this includes the test projects)
 - task: DotNetCoreCLI@2
   inputs:
@@ -36,3 +44,9 @@ steps:
     arguments: '--configuration $(buildConfiguration) --logger "trx;LogFileName=test-results.trx"'  # Output test results in TRX format
     publishTestResults: true   # Publish test results to Azure DevOps
     testRunTitle: 'SpecFlow Test Run on BrowserStack'
+
+- script: |
+    echo "Setting BrowserStack Test Run Name"
+    export BROWSERSTACK_TEST_RUN_NAME=$(Build.BuildId)  # Set the environment variable
+    echo "BrowserStack Test Run Name is: $BROWSERSTACK_TEST_RUN_NAME"
+  displayName: 'Set BROWSERSTACK_TEST_RUN_NAME'
