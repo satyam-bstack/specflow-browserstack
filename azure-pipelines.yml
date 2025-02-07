@@ -1,0 +1,38 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- Azure_CI
+
+pool:
+  vmImage: 'ubuntu'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+    
+# Step to build the solution (this includes the test projects)
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+# Step to run the tests using dotnet test
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/*.Tests.csproj'  # Make sure to specify your test project(s) here
+    arguments: '--configuration $(buildConfiguration) --logger "trx;LogFileName=test-results.trx"'  # Output test results in TRX format
+    publishTestResults: true   # Publish test results to Azure DevOps
+    testRunTitle: 'SpecFlow Test Run on BrowserStack'
