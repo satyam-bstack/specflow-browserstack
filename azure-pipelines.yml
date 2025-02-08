@@ -2,7 +2,7 @@ trigger:
 - Azure_CI
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
