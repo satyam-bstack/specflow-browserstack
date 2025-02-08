@@ -1,8 +1,3 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - Azure_CI
 
@@ -21,51 +16,41 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '8.0.x'   # This will install the latest version of .NET 8.0 SDK
+    version: '8.0.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- script: |
+    dotnet --version
+  displayName: 'Check .NET SDK version'
 
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
-    
-- task: BrowserStackConfig@0
-  inputs:
-    BrowserStackServiceEndPoint: 'browserstack-connection'
-    
-- task: Bash@3
-  displayName: 'Test BrowserStack Service Connection'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Ensure that the BrowserStack credentials are available as environment variables
-      echo "BROWSERSTACK_USERNAME: $BROWSERSTACK_USERNAME"
-      echo "BROWSERSTACK_ACCESS_KEY: $BROWSERSTACK_ACCESS_KEY"
 
-      # Attempt a simple API call to verify the connection
-      curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" https://api.browserstack.com/automate/browsers.json
+# Build the solution in release mode
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --verbosity detailed'
 
-# Step to run the tests using dotnet test
+# Run the tests with more logging and output test results
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/*.csproj'  # Test Project
-    arguments: '--configuration $(buildConfiguration) --logger "trx;LogFileName=test-results.trx"'  # Output test results in TRX format
-    publishTestResults: true   # Publish test results to Azure DevOps
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --verbosity detailed --logger "trx;LogFileName=test-results.trx"'
+    publishTestResults: true
     testRunTitle: 'SpecFlow Test Run on BrowserStack'
 
 - script: |
     echo "Setting BrowserStack Test Run Name"
-    export BROWSERSTACK_TEST_RUN_NAME=$(Build.BuildId)  # Set the environment variable
+    export BROWSERSTACK_TEST_RUN_NAME=$(Build.BuildId)
     echo "BrowserStack Test Run Name is: $BROWSERSTACK_TEST_RUN_NAME"
   displayName: 'Set BROWSERSTACK_TEST_RUN_NAME'
-  
+
 - task: BrowserStackResults@1
   inputs:
     browserstackProduct: 'automate'
