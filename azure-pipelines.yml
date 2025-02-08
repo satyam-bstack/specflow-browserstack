@@ -34,20 +34,22 @@ steps:
   inputs:
     BrowserStackServiceEndPoint: 'browserstack-connection'
     
+- task: Bash@3
+  displayName: 'Test BrowserStack Service Connection'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Ensure that the BrowserStack credentials are available as environment variables
+      echo "BROWSERSTACK_USERNAME: $BROWSERSTACK_USERNAME"
+      echo "BROWSERSTACK_ACCESS_KEY: $BROWSERSTACK_ACCESS_KEY"
 
+      # Attempt a simple API call to verify the connection
+      curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" https://api.browserstack.com/automate/browsers.json
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
-
-- task: Bash@3
-  displayName: 'Set BrowserStack Environment Variables'
-  inputs:
-    targetType: 'inline'
-    script: |
-      echo "##vso[task.setvariable variable=BROWSERSTACK_USERNAME]$(BROWSERSTACK_USERNAME)"
-      echo "##vso[task.setvariable variable=BROWSERSTACK_ACCESS_KEY]$(BROWSERSTACK_ACCESS_KEY)"
 
 # Step to run the tests using dotnet test
 - task: DotNetCoreCLI@2
