@@ -8,7 +8,6 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  BROWSERSTACK_TEST_RUN_NAME: $(Build.BuildId)
 
 steps:
 
@@ -49,6 +48,13 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore --verbosity minimal -nowarn:*'
   displayName: 'Build Solution in Release Mode'
 
+# Set the BrowserStack Test Run Name to match Build Name
+- script: |
+    echo "Aligning Test Run Name with Build Name"
+    set BROWSERSTACK_TEST_RUN_NAME=%BROWSERSTACK_BUILD_NAME%
+    echo "BrowserStack Test Run Name is: %BROWSERSTACK_TEST_RUN_NAME%"
+  displayName: 'Set Test Run Name to Match Build Name'
+  
 # Run the tests and output results
 - task: DotNetCoreCLI@2
   inputs:
