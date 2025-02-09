@@ -62,7 +62,7 @@ steps:
 # Set the BrowserStack Test Run Name
 - script: |
     echo "Setting BrowserStack Test Run Name"
-    set BROWSERSTACK_TEST_RUN_NAME=$(Build.BuildId)
+    set BROWSERSTACK_TEST_RUN_NAME=%BROWSERSTACK_BUILD_NAME%
     echo "BrowserStack Test Run Name is: %BROWSERSTACK_TEST_RUN_NAME%"
   displayName: 'Set BrowserStack Test Run Name'
   
