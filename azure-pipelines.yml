@@ -59,6 +59,13 @@ steps:
     testRunTitle: 'SpecFlow Test Run on BrowserStack'
   displayName: 'Run Tests and Publish Results'
 
+# Set the BrowserStack Test Run Name
+- script: |
+    echo "Setting BrowserStack Test Run Name"
+    set BROWSERSTACK_TEST_RUN_NAME=$(Build.BuildId)
+    echo "BrowserStack Test Run Name is: %BROWSERSTACK_TEST_RUN_NAME%"
+  displayName: 'Set BrowserStack Test Run Name'
+  
 - task: BrowserStackStopLocal@0
   displayName: 'Stop Browserstack Local'
 
