@@ -73,4 +73,7 @@ steps:
 - task: BrowserStackResults@1
   inputs:
     browserstackProduct: 'automate'
+  continueOnError: true
+  condition: always()
   displayName: 'Upload Test Results to BrowserStack'
+
