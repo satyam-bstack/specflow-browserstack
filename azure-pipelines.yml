@@ -69,6 +69,32 @@ steps:
 - task: BrowserStackStopLocal@0
   displayName: 'Stop Browserstack Local'
 
+#Run LCA Test
+- script: |
+   response=$(curl -u satyam_xpSUCh:toYyTzTxYbkpAsqoirU8 -X POST https://lcnc-api.browserstack.com/api/v1/test-suite/${13905b0fd46806554a7e7fd4b97864f2a95eda98}/run)
+   BUILD_ID=$(echo $response | jq -r '.build_id')
+   echo "Build ID: $BUILD_ID"
+   displayName: 'Trigger Test Suite'
+- script: |
+   buildStatus=""
+   retryInterval=30
+   while [[ ("$buildStatus" != "passed" && "$buildStatus" != "failed") ]]; do
+     response=$(curl -u satyam_xpSUCh:toYyTzTxYbkpAsqoirU8 -s https://lcnc-api.browserstack.com/api/v1/builds/${BUILD_ID}/status)
+     buildStatus=$(echo $response | jq -r '.build_status')
+     sleep $retryInterval
+   done
+   if [[ "$buildStatus" == "passed" ]]; then
+     echo "Build passed"
+  
+   elif [[ "$buildStatus" == "failed" ]]; then
+     echo "Build failed"
+     exit 1
+   else
+     echo "Build status unstable"
+     exit 1
+   fi
+   displayName: 'Check Build Status'
+
 # Upload results to BrowserStack
 - task: BrowserStackResults@1
   inputs:
